@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TESLA READY</title>
+<title>TESLA VIDEOS</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -16,34 +17,36 @@ body{
     font-family:Arial,sans-serif;
     background:#111827;
     color:white;
-    display:flex;
     height:100vh;
+    display:grid;
+    grid-template-columns:250px 320px 1fr;
 }
 
-.sidebar{
-    width:320px;
+button{
+    cursor:pointer;
+}
+
+.categories-panel{
     background:#1f2937;
-    overflow-y:auto;
     border-right:1px solid #374151;
+    overflow-y:auto;
+}
+
+.categories-panel.hidden{
+    display:none;
+}
+
+.panel-header{
+    padding:15px;
+    border-bottom:1px solid #374151;
 }
 
 .logo{
-    padding:20px;
-    text-align:center;
-    font-size:28px;
+    font-size:24px;
     font-weight:bold;
     color:#ef4444;
-}
-
-.search{
-    padding:15px;
-}
-
-.search input{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:8px;
+    margin-bottom:15px;
+    text-align:center;
 }
 
 .categories{
@@ -53,13 +56,79 @@ body{
 .category{
     background:#374151;
     padding:12px;
-    margin-bottom:10px;
     border-radius:8px;
+    margin-bottom:10px;
     cursor:pointer;
 }
 
-.category:hover{
-    background:#4b5563;
+.category:hover,
+.category.active{
+    background:#ef4444;
+}
+
+.videos-panel{
+    background:#111827;
+    border-right:1px solid #374151;
+    overflow-y:auto;
+}
+
+.search{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.video-list{
+    padding:15px;
+}
+
+.video-item{
+    background:#1f2937;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.video-item:hover{
+    background:#374151;
+}
+
+.video-item.active{
+    background:#ef4444;
+}
+
+.player-panel{
+    display:flex;
+    flex-direction:column;
+}
+
+.player-header{
+    padding:15px 20px;
+    border-bottom:1px solid #374151;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.player-controls{
+    padding:15px 20px;
+    display:flex;
+    gap:10px;
+    border-bottom:1px solid #374151;
+}
+
+.player-container{
+    flex:1;
+    padding:20px;
+}
+
+#player{
+    width:100%;
+    height:80vh;
 }
 
 .button{
@@ -69,102 +138,124 @@ body{
     border-radius:8px;
     background:#ef4444;
     color:white;
-    cursor:pointer;
-    font-size:16px;
+    font-size:15px;
+    margin-bottom:10px;
 }
 
-.video-list{
-    padding:15px;
-}
-
-.video-card{
-    background:#1f2937;
-    border-radius:10px;
-    overflow:hidden;
-    margin-bottom:12px;
-    cursor:pointer;
-}
-
-.video-card img{
-    width:100%;
-    display:block;
-}
-
-.video-title{
-    padding:10px;
-}
-
-.main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-}
-
-.header{
-    padding:20px;
-    border-bottom:1px solid #374151;
-}
-
-.player{
-    flex:1;
-    padding:20px;
-}
-
-.player iframe{
-    width:100%;
-    height:80vh;
+.control-btn{
+    padding:10px 16px;
     border:none;
-    border-radius:12px;
-    background:black;
+    border-radius:8px;
+    background:#ef4444;
+    color:white;
 }
+
+.toggle-btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    background:#374151;
+    color:white;
+}
+
 </style>
-
 </head>
-
 <body>
 
-<div class="sidebar">
+<!-- CATEGORIES -->
 
-<div class="logo">
-TESLA VIDEOS
-</div>
+<div class="categories-panel" id="categoriesPanel">
 
-<div class="search">
-<input
-type="text"
-id="search"
-placeholder="Søg video..."
-oninput="renderVideos()">
-</div>
+    <div class="panel-header">
 
-<div class="categories" id="categories"></div>
+        <div class="logo">
+            TESLA VIDEOS
+        </div>
 
-<div style="padding:15px;">
-<button class="button" onclick="addCategory()">
-➕ Ny kategori
-</button>
-</div>
+        <button
+            class="button"
+            onclick="addCategory()">
+            + New Category
+        </button>
 
-<div class="video-list" id="videos"></div>
+    </div>
 
-</div>
-
-<div class="main">
-
-<div class="header">
-<h2 id="currentTitle">
-Vælg en video
-</h2>
-</div>
-
-<div class="player">
-<iframe
-id="player"
-allowfullscreen>
-</iframe>
-</div>
+    <div
+        class="categories"
+        id="categories">
+    </div>
 
 </div>
+
+<!-- VIDEOS -->
+
+<div class="videos-panel">
+
+    <div class="panel-header">
+
+        <button
+            class="button"
+            onclick="addVideo()">
+            + Add Video
+        </button>
+
+        <input
+            type="text"
+            id="search"
+            class="search"
+            placeholder="Search Video..."
+            oninput="renderVideos()">
+
+    </div>
+
+    <div
+        class="video-list"
+        id="videos">
+    </div>
+
+</div>
+
+<!-- PLAYER -->
+
+<div class="player-panel">
+
+    <div class="player-header">
+
+        <button
+            class="toggle-btn"
+            onclick="toggleCategories()">
+            ☰ Categories
+        </button>
+
+        <h2 id="currentTitle">
+            Select a Video
+        </h2>
+
+    </div>
+
+    <div class="player-controls">
+
+        <button
+            class="control-btn"
+            onclick="previousVideo()">
+            ⏮ Previous
+        </button>
+
+        <button
+            class="control-btn"
+            onclick="nextVideo()">
+            Next ⏭
+        </button>
+
+    </div>
+
+    <div class="player-container">
+        <div id="player"></div>
+    </div>
+
+</div>
+
+https://www.youtube.com/iframe_api
 
 <script>
 
@@ -175,13 +266,33 @@ JSON.parse(localStorage.getItem('teslaVideos')) ||
     Bollywood: []
 };
 
-let currentCategory = 'Afghani';
+let currentCategory = Object.keys(library)[0];
+let currentVideoIndex = -1;
+let player;
 
-function saveLibrary() {
+function saveLibrary(){
     localStorage.setItem(
         'teslaVideos',
         JSON.stringify(library)
     );
+}
+
+function onYouTubeIframeAPIReady(){
+
+    player = new YT.Player('player',{
+        width:'100%',
+        height:'100%',
+        events:{
+            onStateChange:onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerStateChange(event){
+
+    if(event.data === YT.PlayerState.ENDED){
+        nextVideo();
+    }
 }
 
 function renderCategories(){
@@ -191,27 +302,30 @@ function renderCategories(){
 
     container.innerHTML = '';
 
-    Object.keys(library).forEach(category => {
+    Object.keys(library).forEach(category=>{
 
-        const item =
+        const div =
         document.createElement('div');
 
-        item.className = 'category';
+        div.className =
+        currentCategory === category
+        ? 'category active'
+        : 'category';
 
-        item.textContent = '📁 ' + category;
+        div.textContent =
+        '📁 ' + category;
 
-        item.onclick = () => {
+        div.onclick = ()=>{
 
-            currentCategory = category;
+            currentCategory =
+            category;
 
+            renderCategories();
             renderVideos();
-
         };
 
-        container.appendChild(item);
-
+        container.appendChild(div);
     });
-
 }
 
 function renderVideos(){
@@ -232,63 +346,91 @@ function renderVideos(){
         .toLowerCase()
         .includes(search)
     )
-    .forEach(video => {
+    .forEach((video,index)=>{
 
-        const thumbnail =
-        'https://img.youtube.com/vi/' +
-        video.youtubeId +
-        '/hqdefault.jpg';
-
-        const card =
+        const item =
         document.createElement('div');
 
-        card.className =
-        'video-card';
+        item.className =
+        index === currentVideoIndex
+        ? 'video-item active'
+        : 'video-item';
 
-        card.innerHTML = `
-            ${thumbnail}
-            <div class="video-title">
-                ${video.title}
-            </div>
-        `;
+        item.textContent =
+        video.title;
 
-        card.onclick = () => {
-
-            document.getElementById(
-                'currentTitle'
-            ).textContent =
-            video.title;
-
-            document.getElementById(
-                'player'
-            ).src =
-            video.url;
+        item.onclick = ()=>{
+            playVideo(index);
         };
 
-        container.appendChild(card);
-
+        container.appendChild(item);
     });
+}
 
-    const btn =
-    document.createElement('button');
+function playVideo(index){
 
-    btn.className = 'button';
+    const videos =
+    library[currentCategory];
 
-    btn.style.marginTop = '10px';
+    if(!videos.length) return;
 
-    btn.textContent =
-    '➕ Tilføj video';
+    currentVideoIndex = index;
 
-    btn.onclick = addVideo;
+    const video =
+    videos[currentVideoIndex];
 
-    container.appendChild(btn);
+    document.getElementById(
+        'currentTitle'
+    ).textContent =
+    video.title;
 
+    player.loadVideoById(
+        video.youtubeId
+    );
+
+    renderVideos();
+}
+
+function nextVideo(){
+
+    const videos =
+    library[currentCategory];
+
+    if(!videos.length) return;
+
+    currentVideoIndex++;
+
+    if(
+        currentVideoIndex >=
+        videos.length
+    ){
+        currentVideoIndex = 0;
+    }
+
+    playVideo(currentVideoIndex);
+}
+
+function previousVideo(){
+
+    const videos =
+    library[currentCategory];
+
+    if(!videos.length) return;
+
+    currentVideoIndex--;
+
+    if(currentVideoIndex < 0){
+        currentVideoIndex =
+        videos.length - 1;
+    }
+
+    playVideo(currentVideoIndex);
 }
 
 function addCategory(){
 
     const name =
-    prompt('Kategori navn');
+    prompt('Category name');
 
     if(!name) return;
 
@@ -299,19 +441,18 @@ function addCategory(){
         saveLibrary();
 
         renderCategories();
-
     }
 }
 
 function addVideo(){
 
     const title =
-    prompt('Video titel');
+    prompt('Video title');
 
     if(!title) return;
 
     const youtubeUrl =
-    prompt('Indsæt YouTube link');
+    prompt('Paste YouTube link');
 
     if(!youtubeUrl) return;
 
@@ -323,7 +464,6 @@ function addVideo(){
         youtubeUrl
         .split('v=')[1]
         .split('&')[0];
-
     }
     else if(
         youtubeUrl.includes('youtu.be/')
@@ -333,7 +473,6 @@ function addVideo(){
         youtubeUrl
         .split('youtu.be/')[1]
         .split('?')[0];
-
     }
     else if(
         youtubeUrl.includes('/embed/')
@@ -342,34 +481,47 @@ function addVideo(){
         id =
         youtubeUrl
         .split('/embed/')[1];
-
     }
 
     if(!id){
 
         alert(
-        'Kun YouTube links understøttes'
+            'Only YouTube links are supported'
         );
 
         return;
     }
 
     library[currentCategory].push({
-
-        title: title,
-
-        youtubeId: id,
-
-        url:
-        'https://www.youtube.com/embed/' +
-        id
-
+        title:title,
+        youtubeId:id
     });
 
     saveLibrary();
-
     renderVideos();
+}
 
+function toggleCategories(){
+
+    const panel =
+    document.getElementById(
+        'categoriesPanel'
+    );
+
+    panel.classList.toggle(
+        'hidden'
+    );
+
+    if(panel.classList.contains('hidden')){
+
+        document.body.style.gridTemplateColumns =
+        '320px 1fr';
+    }
+    else{
+
+        document.body.style.gridTemplateColumns =
+        '250px 320px 1fr';
+    }
 }
 
 renderCategories();
