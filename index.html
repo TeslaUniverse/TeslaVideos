@@ -671,40 +671,6 @@ function toggleCategories(){
     }
 }
 
-const item =
-    document.createElement('div');
-
-item.className =
-    currentCategory === category
-    ? 'category active'
-    : 'category';
-
-item.innerHTML = `
-    <span>📁 ${category}</span>
-    <span
-        style="float:right;cursor:pointer;"
-        onclick="event.stopPropagation(); deleteCategory('${category}')">
-        🗑️
-    </span>
-`;
-
-item.onclick = () => {
-
-    currentCategory = category;
-
-    currentVideoIndex = 0;
-
-    renderCategories();
-    renderVideos();
-
-    if (
-        playerReady &&
-        library[category].length
-    ) {
-        playVideo(0);
-    }
-}
-
 function deleteCategory(category){
 
     if(
@@ -739,6 +705,31 @@ function deleteCategory(category){
 
     renderCategories();
     renderVideos();
+}
+
+function deleteVideo(index){
+
+    if(
+        !confirm(
+            'Delete video?'
+        )
+    ){
+        return;
+    }
+
+    library[currentCategory]
+        .splice(index,1);
+
+    saveLibrary();
+
+    currentVideoIndex = -1;
+
+    renderVideos();
+
+    document.getElementById(
+        'currentTitle'
+    ).textContent =
+    'Select a Video';
 }
 
 renderCategories();
