@@ -164,6 +164,13 @@
             color:white;
         }
 
+		.category,
+		.video-item{
+		    display:flex;
+		    justify-content:space-between;
+		    align-items:center;
+		}
+
     </style>
 
 </head>
@@ -393,8 +400,14 @@ function renderCategories(){
                 ? 'category active'
                 : 'category';
 
-            item.textContent =
-                '📁 ' + category;
+            item.innerHTML = `
+			    <span>📁 ${category}</span>
+			    <span
+			        style="cursor:pointer;"
+			        onclick="event.stopPropagation(); deleteCategory('${category}')">
+			        🗑️
+			    </span>
+			`;
 
             item.onclick = () => {
 
@@ -456,8 +469,15 @@ function renderVideos(){
                 ? 'video-item active'
                 : 'video-item';
 
-            item.textContent =
-                video.title;
+            item.innerHTML = `
+			    <span>${video.title}</span>
+			
+			    <span
+			        style="cursor:pointer;"
+			        onclick="event.stopPropagation(); deleteVideo(${index})">
+			        🗑️
+			    </span>
+`			;
 
             item.onclick = () => {
                 playVideo(index);
