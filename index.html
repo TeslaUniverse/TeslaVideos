@@ -671,6 +671,76 @@ function toggleCategories(){
     }
 }
 
+const item =
+    document.createElement('div');
+
+item.className =
+    currentCategory === category
+    ? 'category active'
+    : 'category';
+
+item.innerHTML = `
+    <span>📁 ${category}</span>
+    <span
+        style="float:right;cursor:pointer;"
+        onclick="event.stopPropagation(); deleteCategory('${category}')">
+        🗑️
+    </span>
+`;
+
+item.onclick = () => {
+
+    currentCategory = category;
+
+    currentVideoIndex = 0;
+
+    renderCategories();
+    renderVideos();
+
+    if (
+        playerReady &&
+        library[category].length
+    ) {
+        playVideo(0);
+    }
+}
+
+function deleteCategory(category){
+
+    if(
+        !confirm(
+            'Delete category "' +
+            category +
+            '" ?'
+        )
+    ){
+        return;
+    }
+
+    delete library[category];
+
+    const categories =
+        Object.keys(library);
+
+    if(categories.length === 0){
+
+        library["New Category"] = [];
+
+        currentCategory =
+            "New Category";
+    }
+    else{
+
+        currentCategory =
+            categories[0];
+    }
+
+    saveLibrary();
+
+    renderCategories();
+    renderVideos();
+}
+
 renderCategories();
 renderVideos();
 
